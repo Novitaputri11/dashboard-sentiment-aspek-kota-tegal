@@ -6,10 +6,10 @@ import re
 import matplotlib.pyplot as plt
 from PIL import Image
 from datetime import datetime
+from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 
 # Function untuk membuat barchart dengan filter kategori
 ###
-
 def plot_sentiment_chart(dataset):
     """
     Fungsi untuk membuat chart menggunakan Plotly yang menampilkan jumlah sentimen 1 dan 0 pada setiap kategori.
@@ -80,6 +80,16 @@ def create_line_plot(data, category):
     # Membuat line plot menggunakan Plotly
     fig = px.line(plot_data, x='tanggal', y=['Positif', 'Negatif'], title='Line Plot Positif dan Negatif berdasarkan Kategori: ' + category)
     
+    # Mengubah warna label
+    fig.update_traces(line=dict(color='blue'), selector=dict(name='Positif'))
+    fig.update_traces(line=dict(color='red'), selector=dict(name='Negatif'))
+    
+    fig.update_layout(legend=dict(orientation="h",
+                                  yanchor="top",  # Mengatur anchor ke atas
+                                  y=1.0,         # Mengatur posisi y ke 1 (paling atas)
+                                  xanchor="right",
+                                  x=1))          # Mengatur posisi x ke 1 (paling kanan)
+
     # Menampilkan plot menggunakan Streamlit
     st.plotly_chart(fig)
     
@@ -122,6 +132,15 @@ def preprocess_text(text):
     # Convert text to lowercase
     text = text.lower()
 
+    # Remove stop words
+    factory = StopWordRemoverFactory()
+    stop_words = factory.create_stop_word_remover()
+    text = stop_words.remove(text)
+
+    # Remove specific phrase
+    text = re.sub(r'tegal', '', text)
+    text = re.sub(r'kota', '', text)
+
     return text
 
 def create_wordcloud(data, category):
@@ -158,10 +177,10 @@ def main():
         st.header("Sentimen Analisis Kota Tegal Pada Aspek Wisata Hiburan, Pendidikan, Fasilitas Publik, dan Kuliner")
 
     # Membaca data dari dataset Twitter Sentiment Analysis
-    data = pd.read_csv("data.csv", sep=",")
+    data = pd.read_csv("data-26 Juni 2023.csv", sep=",")
 
     # Membuat select box untuk memilih kategori
-    categories = ['wisata/hiburan', 'pendidikan', 'fasilitas/layanan publik', 'kuliner']
+    categories = ['wisata_hiburan', 'pendidikan', 'fasilitas_layanan_publik', 'kuliner']
     category = st.sidebar.selectbox("Pilih kategori:", ['Semua Kategori']+categories)
 
     if category== 'Semua Kategori' :
@@ -182,5 +201,5 @@ def main():
                 end_date = st.date_input("Pilih Tanggal Akhir", value=None)
             with col2:            
                 create_line_plot_with_date(data, category, start_date, end_date)   
-
 main()
+
