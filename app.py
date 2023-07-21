@@ -238,7 +238,7 @@ def main():
             csv = convert_df(data)
 
             st.download_button(
-                label="Download edited data as CSV",
+                label="Download Data as CSV",
                 data=csv,
                 file_name='data_klassifikasi.csv',
                 mime='text/csv',
