@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
 import pandas as pd
 import plotly.express as px
 from wordcloud import WordCloud
@@ -163,43 +164,98 @@ def create_wordcloud(data, category):
     plt.title('Word Cloud - {}'.format(category.capitalize()))
     st.pyplot(plt)
 
+def convert_df(df):
+    return df.to_csv(index=False).encode('utf-8')
+
 def main():
-    #judul dan Logo Kota Tegal
-    col1, col2 = st.columns((2, 8))
+    with st.sidebar:
+        selected = option_menu(
+            menu_title="Main Menu",
+            options=["Home", "Dashboard"],
+            icons=["house","book"],
+            menu_icon="cast",
+            default_index=0,
+        )
+    if selected == "Home":
+        st.title(f" {selected}")
+        #judul dan Logo Kota Tegal
+        col1, col2 = st.columns((2, 8))
 
-    with col1:
-        # st.header("")
-        image = Image.open("Logo-Kota-Tegal.png")
-        # resized_image = image.resize((150, 150))
-        st.image(image, caption="", use_column_width=True)
+        with col1:
+            # st.header("")
+            image = Image.open("Logo-Kota-Tegal.png")
+            # resized_image = image.resize((150, 150))
+            st.image(image, caption="", use_column_width=True)
 
-    with col2:
-        st.header("Sentimen Analisis Kota Tegal Pada Aspek Wisata Hiburan, Pendidikan, Fasilitas Publik, dan Kuliner")
+        with col2:
+            st.header("Sentimen Analisis Kota Tegal Pada Aspek Wisata Hiburan, Pendidikan, Fasilitas Publik, dan Kuliner")
+        gambar1, gambar2, gambar3 = st.columns((3))
+        with gambar1:
+            # st.header("")
+            image = Image.open("image\city walk.jpg")
+            # resized_image = image.resize((150, 150))
+            st.image(image, caption="", use_column_width=True)
+        with gambar2:
+            # st.header("")
+            image = Image.open("image\Signage-AAT-s.jpg")
+            # resized_image = image.resize((150, 150))
+            st.image(image, caption="", use_column_width=True)
+        with gambar3:
+            # st.header("")
+            image = Image.open("image\stasiun-tegal.jpg")
+            # resized_image = image.resize((150, 150))
+            st.image(image, caption="", use_column_width=True)
 
-    # Membaca data dari dataset Twitter Sentiment Analysis
-    data = pd.read_csv("data.csv", sep=",")
+        st.write('Ini adalah halaman tentang analisis sentimen di Kota Tegal terkait dengan aspek wisata hiburan, pendidikan, fasilitas publik, dan kuliner.')
+        st.write('Kami menggunakan teknik pemrosesan bahasa alami dan analisis sentimen untuk menganalisis ulasan dan pendapat masyarakat terkait dengan aspek-aspek tersebut.')
+        st.write('Dengan menganalisis sentimen, kami dapat mendapatkan wawasan mengenai bagaimana masyarakat merasakan dan mengevaluasi wisata hiburan, pendidikan, fasilitas publik, dan kuliner di Kota Tegal.')
+        st.write('Dashboard ini menyajikan hasil analisis sentimen secara interaktif dan informatif kepada pengguna.')
+        st.write('Selamat menikmati dan semoga informasi yang disajikan bermanfaat!')
 
-    # Membuat select box untuk memilih kategori
-    categories = ['wisata_hiburan', 'pendidikan', 'fasilitas_layanan_publik', 'kuliner']
-    category = st.sidebar.selectbox("Pilih kategori:", ['Semua Kategori']+categories)
+    else:        
+        #judul dan Logo Kota Tegal
+        col1, col2 = st.columns((2, 8))
 
-    if category== 'Semua Kategori' :
-        #Bar Plot
-        plot_sentiment_chart(data)
-        
-    else:
-        plot_sentiment_chart_by_category(data, category)
-        tanpa_filter, filter = st.tabs(["Tanpa Filter", "Filter"])
-        with tanpa_filter:
-            create_line_plot(data, category)
-            create_wordcloud(data, category)
-        
-        with filter:            
-            col1, col2 = st.columns((2, 8))
-            with col1:
-                start_date = st.date_input("Pilih Tanggal Awal", value=None)
-                end_date = st.date_input("Pilih Tanggal Akhir", value=None)
-            with col2:            
-                create_line_plot_with_date(data, category, start_date, end_date)   
+        with col1:
+            # st.header("")
+            image = Image.open("Logo-Kota-Tegal.png")
+            # resized_image = image.resize((150, 150))
+            st.image(image, caption="", use_column_width=True)
+
+        with col2:
+            st.header("Sentimen Analisis Kota Tegal Pada Aspek Wisata Hiburan, Pendidikan, Fasilitas Publik, dan Kuliner")
+
+        # Membaca data dari dataset Twitter Sentiment Analysis
+        data = pd.read_csv("data-26 Juni 2023.csv", sep=",")
+
+        categories = ['wisata_hiburan', 'pendidikan', 'fasilitas_layanan_publik', 'kuliner']
+        category = st.sidebar.selectbox("Pilih kategori:", ['Semua Kategori']+categories)
+
+
+        if category== 'Semua Kategori' :
+            #Bar Plot
+            plot_sentiment_chart(data)
+            csv = convert_df(data)
+
+            st.download_button(
+                label="Download edited data as CSV",
+                data=csv,
+                file_name='data_klassifikasi.csv',
+                mime='text/csv',
+            )
+            
+        else:
+            plot_sentiment_chart_by_category(data, category)
+            tanpa_filter, filter = st.tabs(["Tanpa Filter", "Filter"])
+            with tanpa_filter:
+                create_line_plot(data, category)
+                create_wordcloud(data, category)
+            
+            with filter:            
+                col1, col2 = st.columns((2, 8))
+                with col1:
+                    start_date = st.date_input("Pilih Tanggal Awal", value=None)
+                    end_date = st.date_input("Pilih Tanggal Akhir", value=None)
+                with col2:            
+                    create_line_plot_with_date(data, category, start_date, end_date)   
 main()
-
