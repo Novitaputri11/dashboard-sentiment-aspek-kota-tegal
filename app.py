@@ -192,17 +192,17 @@ def main():
         gambar1, gambar2, gambar3 = st.columns((3))
         with gambar1:
             # st.header("")
-            image = Image.open("image\city walk.jpg")
+            image = Image.open("city walk.jpg")
             # resized_image = image.resize((150, 150))
             st.image(image, caption="", use_column_width=True)
         with gambar2:
             # st.header("")
-            image = Image.open("image\Signage-AAT-s.jpg")
+            image = Image.open("Signage-AAT-s.jpg")
             # resized_image = image.resize((150, 150))
             st.image(image, caption="", use_column_width=True)
         with gambar3:
             # st.header("")
-            image = Image.open("image\stasiun-tegal.jpg")
+            image = Image.open("stasiun-tegal.jpg")
             # resized_image = image.resize((150, 150))
             st.image(image, caption="", use_column_width=True)
 
