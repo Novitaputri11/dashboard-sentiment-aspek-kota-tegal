@@ -226,7 +226,7 @@ def main():
             st.header("Sentimen Analisis Kota Tegal Pada Aspek Wisata Hiburan, Pendidikan, Fasilitas Publik, dan Kuliner")
 
         # Membaca data dari dataset Twitter Sentiment Analysis
-        data = pd.read_csv("data-26 Juni 2023.csv", sep=",")
+        data = pd.read_csv("data.csv", sep=",")
 
         categories = ['wisata_hiburan', 'pendidikan', 'fasilitas_layanan_publik', 'kuliner']
         category = st.sidebar.selectbox("Pilih kategori:", ['Semua Kategori']+categories)
